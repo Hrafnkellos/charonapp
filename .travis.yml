@@ -1,0 +1,25 @@
+language: node_js
+node_js:
+  - "10.1"
+cache: yarn
+notifications:
+  slack: landsbankinn-ut:pUKsla6pEkLdsOwSbSdoJrI9
+# safelist
+branches:
+  only:
+  - master
+script:
+  - echo "installing dependencies react"
+  - yarn install
+  - echo "installing dependencies functions"
+  - cd functions && npm install && cd ..
+  - echo "Testing"
+  - yarn test
+  - echo "Building"
+  - yarn build
+deploy:
+  provider: firebase
+  skip_cleanup: true
+  token:
+    secure: $FIREBASE_TOKEN
+  message: "deploying"
