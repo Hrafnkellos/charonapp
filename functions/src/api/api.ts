@@ -5,6 +5,7 @@ import * as morgan from 'morgan';
 import * as cors from 'cors';
 import { morganOption } from '../api/config/winston.config';
 import { morganJsonFormat, setTokens } from '../api/config/morgan.config';
+import { error } from 'util';
 
 const app = express();
 
@@ -23,6 +24,10 @@ app.get('/healthcheck', (request, response) => {
         processUptime: process.uptime(),
         systemUptime: os.uptime()
     });
+});
+
+app.get('/error', (request, response) => {
+    throw new error("error test");
 });
 
 app.post('/credittransfer', (request, response) => {
