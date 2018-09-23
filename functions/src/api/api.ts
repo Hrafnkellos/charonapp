@@ -5,7 +5,9 @@ import * as morgan from 'morgan';
 import * as cors from 'cors';
 import { morganOption } from '../api/config/winston.config';
 import { morganJsonFormat, setTokens } from '../api/config/morgan.config';
-import { error } from 'util';
+import * as Sentry from '@sentry/node';
+
+Sentry.init({ dsn: 'https://edd622d651324f54baa8c13f6809a5e5@sentry.io/1286393' });
 
 const app = express();
 
@@ -26,12 +28,17 @@ app.get('/healthcheck', (request, response) => {
     });
 });
 
-app.get('/error', (request, response) => {
-    throw new error("error test");
+app.get('/error', (req, res, next) => {
+    next(new Error("Demo error!"));
 });
 
 app.post('/credittransfer', (request, response) => {
     response.send("credit transfer success");
 });
+
+app.use((err, req, res, next) => {
+    Sentry.captureException(err);
+    res.status(500).send({error: err.message});
+})
 
 export default app;
