@@ -13,6 +13,18 @@ export class AuthPSD2Resource {
         this.logger = logger;
     }
 
+    ErrorHandler(err, response, body, cb) {
+        if(err) {
+            err.statusCode = 500;
+            cb(err);
+            return;
+        }
+        if(response.statusCode >= 400) {
+            cb(body);
+            return;
+        }
+    }
+
     GetThirdPartyProviderToken(cb) {
         this.logger.time("GetThirdPartyProviderToken");
         this.request.post({ 
@@ -37,15 +49,15 @@ export class AuthPSD2Resource {
             }, (err, response, body)=> 
             {
                 this.logger.timeEnd("GetThirdPartyProviderToken");
-                // this.logger.log(err, response, body);
-                const error = response.statusCode === 200 ? null : response.statusCode;
+                this.ErrorHandler(err, response, body, cb);
                 cb(
-                    error,
+                    null,
                     {
                         order_ref: body.response.order_ref,
                         tpp_token: body.response.tpp_token
                     }
                 );
+                return;
             }
         );
     }
@@ -65,43 +77,16 @@ export class AuthPSD2Resource {
             }, (err, response, body)=> 
             {
                 this.logger.timeEnd("GetThirdPartyProviderToken");
-                // this.logger.log(err, response, body);
-                const error = response.statusCode === 200 ? null : response.statusCode;
+                this.ErrorHandler(err, response, body, cb);
                 cb(
-                    error,
+                    null,
                     {
                         code: body.response.code,
                     }
                 );
+                return;
             }
         );
-        
-        /*[
-            {"key":"Accept","value":"application/json"},
-            {"key":"Content-Type","value":"application/json"},
-            {"key":"Authorization","value":"Bearer {{tpp_token}}"},
-            {"key":"X-IBM-Client-Id","value":"{{X-IBM-Client-ID}}"},
-            {"key":"X-IBM-Client-Secret","value":"{{X-IBM-Client-Secret}}"}
-        ] */
-        /* 
-        {
-            "groupHeader": {
-                "messageIdentification": "FNwipseRYUw",
-                "creationDateTime": "2018-09-16T01:39:11.764Z"
-            },
-            "response": {
-                "code": "eyJlbmMiOiJBMTI4R0NNIiwiYWxnIjoiZGlyIn0..DP-SkBZdH-8VELyP.L2wU8UKoKxkApGovBwSm-o7Ultdj5vHzxUYpyzK2B6NKpKAy8gFOpqbZuZPG9uvRiCeJuehUVGa-U-8lyVK_uR_IdyEseBLKf9_G7H9_t6XPFnmkw4h1975cjm7EMdnEJvHf5cnURQ2U487In5GLZelzV-uIQyRvv1cyn8JqE9Q5TK55dyvNic4C0ApwDaoysuqHzreeGhm14SP3b8r4hgrAZSpkkuPucvmY17vdtmacAkWXj3f3BVIyRStI9iRPHJL0xEYYw8rLA_lCHxmcWvBjNQTPH825ybX1A8APJ3JHy2-WOP8YfDXQayptl_dAxPFwIlmTkKELn2eCqUiSa5D0ZDBYWI4Gl5M0xfMF1xT-BoVLt7cvq_Ni3SLTGtZ2-jf1jNTm3c8juTZL9iFXY4fmscXxP41zkd0fQiviUSppa6dhhSL9oXZauzFYHEX0lh8lvNoT-FvXMd6BRrxQhrMEVIS2KUwa7bLHYYU6p8TydrJTfgAPE3YYcicDuJ6jZHIm-NwSgMS1L3l-_8u3c4q6bX5xvlHsxpnBuvxw1m1osw5FNxS2V7Ok7C9fBrjEoWaIH2kil1C_VMLr.5OWaH_tPbTMWPjOeaw6TRQ",
-                "state": "COMPLETED",
-                "links": [
-                    {
-                        "rel": "code",
-                        "href": "/v2/authorize-decoupled/token"
-                    }
-                ]
-            }
-        }
-        */
-        return {};
     }
 
     GetAccessToken() {

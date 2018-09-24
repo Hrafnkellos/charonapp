@@ -9,7 +9,9 @@ AuthorizationResource.GetThirdPartyProviderToken((err, tppCombo) => {
     if (err) {
         logger.log(err);
     } else {
-        logger.log(tppCombo);
+        AuthorizationResource.GetAuthorizationToken(tppCombo, token => {
+            console.log(token);
+        });
     }
 });
 
