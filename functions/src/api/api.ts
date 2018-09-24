@@ -28,13 +28,15 @@ app.get('/healthcheck', (request, response) => {
     });
 });
 
-app.get('/errors/:message', (req, res, next) => {
-    next(new Error(req.params.message));
-});
-
 app.post('/credittransfer', (request, response) => {
     response.send("credit transfer success");
 });
+
+app.get('/error/:message', (req, res, next) => {
+    // to test erros
+    next(new Error(req.params.message));
+});
+
 
 app.use((err, req, res, next) => {
     Sentry.captureException(err);
