@@ -28,7 +28,7 @@ app.get('/healthcheck', (request, response) => {
     });
 });
 
-app.get('/error:message', (req, res, next) => {
+app.get('/error/:message', (req, res, next) => {
     next(new Error(req.params.message));
 });
 
