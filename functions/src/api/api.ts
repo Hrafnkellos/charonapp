@@ -28,8 +28,8 @@ app.get('/healthcheck', (request, response) => {
     });
 });
 
-app.get('/error', (req, res, next) => {
-    next(new Error("Demo error!"));
+app.get('/error:message', (req, res, next) => {
+    next(new Error(req.params.message));
 });
 
 app.post('/credittransfer', (request, response) => {
