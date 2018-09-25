@@ -1,15 +1,15 @@
-import { RequestAPI, Request, CoreOptions, RequiredUriUrl } from 'request';
+import { AxiosInstance } from 'axios';
 
 export class AuthPSD2Resource {
 
     X_IBM_Client_ID = process.env.N_CLIENT_ID;
     X_IBM_Client_Secret = process.env.N_CLIENT_SEACRET;
 
-    request:RequestAPI<Request, CoreOptions, RequiredUriUrl>;
-    logger:Console;
+    private axios:AxiosInstance;
+    private logger:Console;
 
-    constructor(request, logger) {
-        this.request = request;
+    constructor(axios:AxiosInstance, logger:Console) {
+        this.axios = axios;
         this.logger = logger;
     }
 
@@ -25,69 +25,105 @@ export class AuthPSD2Resource {
         }
     }
 
-    GetThirdPartyProviderToken(cb) {
-        this.logger.time("GetThirdPartyProviderToken");
-        this.request.post({ 
-            url: "https://api.nordeaopenbanking.com/v2/authorize-decoupled",
-            headers: {
-                "Accept":"application/json",
-                "Content-Type":"application/json",
-                "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                "X-IBM-Client-Secret": this.X_IBM_Client_Secret
-            },
-            followRedirect: false,
-            json: { 
-                "response_type": "nordea_code",
-                "psu_id": "193805010844",
-                "scope": ["ACCOUNTS_BASIC","PAYMENTS_MULTIPLE","ACCOUNTS_TRANSACTIONS","ACCOUNTS_DETAILS","ACCOUNTS_BALANCES"],
-                "language": "SE",
-                "redirect_uri": "https://httpbin.org/get",
-                "account_list": ["41770042136"],
-                "duration": 129600,
-                "state": "some id"
-              }
-            }, (err, response, body)=> 
-            {
-                this.logger.timeEnd("GetThirdPartyProviderToken");
-                this.ErrorHandler(err, response, body, cb);
-                cb(
-                    null,
-                    {
-                        order_ref: body.response.order_ref,
-                        tpp_token: body.response.tpp_token
-                    }
-                );
-                return;
-            }
-        );
+    // Want to use async/await? Add the `async` keyword to your outer function/method.
+    async GetThirdPartyProviderTokenAsync() {
+        try {
+            this.logger.time("GetThirdPartyProviderToken");
+            const response = await this.axios({
+                url: 'https://api.nordeaopenbanking.com/v2/authorize-decoupled',
+                method: 'POST',
+                maxRedirects: 0,
+                headers: {
+                    "Accept":"application/json",
+                    "Content-Type":"application/json",
+                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
+                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret
+                },
+                data: { 
+                    "response_type": "nordea_code",
+                    "psu_id": "193805010844",
+                    "scope": ["ACCOUNTS_BASIC","PAYMENTS_MULTIPLE","ACCOUNTS_TRANSACTIONS","ACCOUNTS_DETAILS","ACCOUNTS_BALANCES"],
+                    "language": "SE",
+                    "redirect_uri": "https://httpbin.org/get",
+                    "account_list": ["41770042136"],
+                    "duration": 129600,
+                    "state": "some id"
+                  },
+            });
+            this.logger.timeEnd("GetThirdPartyProviderToken");
+            const {order_ref, tpp_token} = response.data.response;
+            return { 
+                order_ref,
+                tpp_token
+            };
+        } catch (error) {
+            return error;
+        }
     }
 
-    GetAuthorizationToken(tppCombo, cb) {
-        this.logger.time("GetAuthorizationToken");
-        this.request.get({ 
-            url: `https://api.nordeaopenbanking.com/v2/authorize-decoupled/${tppCombo.order_ref}`,
-            headers: {
-                "Accept":"application/json",
-                "Content-Type":"application/json",
-                "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                "Authorization": `Bearer ${tppCombo.tpp_token}`
-            },
-            followRedirect: false,
-            }, (err, response, body)=> 
-            {
-                this.logger.timeEnd("GetThirdPartyProviderToken");
-                this.ErrorHandler(err, response, body, cb);
-                cb(
-                    null,
-                    {
-                        code: body.response.code,
-                    }
-                );
-                return;
-            }
-        );
-    }
+    // GetThirdPartyProviderToken(cb) {
+    //     this.logger.time("GetThirdPartyProviderToken");
+    //     this.request.post({ 
+    //         url: "https://api.nordeaopenbanking.com/v2/authorize-decoupled",
+    //         headers: {
+    //             "Accept":"application/json",
+    //             "Content-Type":"application/json",
+    //             "X-IBM-Client-ID": this.X_IBM_Client_ID,
+    //             "X-IBM-Client-Secre": this.X_IBM_Client_Secret
+    //         },
+    //         followRedirect: false,
+    //         json: { 
+    //             "response_type": "nordea_code",
+    //             "psu_id": "193805010844",
+    //             "scope": ["ACCOUNTS_BASIC","PAYMENTS_MULTIPLE","ACCOUNTS_TRANSACTIONS","ACCOUNTS_DETAILS","ACCOUNTS_BALANCES"],
+    //             "language": "SE",
+    //             "redirect_uri": "https://httpbin.org/get",
+    //             "account_list": ["41770042136"],
+    //             "duration": 129600,
+    //             "state": "some id"
+    //           }
+    //         }, (err, response, body)=> 
+    //         {
+    //             this.logger.timeEnd("GetThirdPartyProviderToken");
+    //             this.ErrorHandler(err, response, body, cb);
+    //             cb(
+    //                 null,
+    //                 {
+    //                     order_ref: body.response.order_ref,
+    //                     tpp_token: body.response.tpp_token
+    //                 }
+    //             );
+    //             return;
+    //         }
+    //     );
+    // }
+
+    // GetAuthorizationToken(tppCombo, cb) {
+    //     this.logger.time("GetAuthorizationToken");
+    //     this.request.get({ 
+    //         url: `https://api.nordeaopenbanking.com/v2/authorize-decoupled/${tppCombo.order_ref}`,
+    //         headers: {
+    //             "Accept":"application/json",
+    //             "Content-Type":"application/json",
+    //             "X-IBM-Client-ID": this.X_IBM_Client_ID,
+    //             "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
+    //             "Authorization": `Bearer ${tppCombo.tpp_token}`
+    //         },
+    //         followRedirect: false,
+    //         }, (err, response, body)=> 
+    //         {
+    //             this.logger.timeEnd("GetThirdPartyProviderToken");
+    //             this.ErrorHandler(err, response, body, cb);
+    //             cb(
+    //                 null,
+    //                 {
+    //                     code: body.response.code,
+    //                 }
+    //             );
+    //             return;
+    //         }
+    //     );
+    // }
 
     GetAccessToken() {
         "https://api.nordeaopenbanking.com/v2/authorize-decoupled/token"

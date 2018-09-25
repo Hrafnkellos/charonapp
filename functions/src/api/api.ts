@@ -11,6 +11,10 @@ Sentry.init({ dsn: 'https://edd622d651324f54baa8c13f6809a5e5@sentry.io/1286393' 
 
 const app = express();
 
+// The error handler must be before any other error middleware
+// @ts-ignore
+app.use(Sentry.Handlers.errorHandler());
+
 app.use(cors({ origin: true }));
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -28,17 +32,17 @@ app.get('/healthcheck', (request, response) => {
     });
 });
 
-app.get('/error/:message', (req, res, next) => {
-    next(new Error(req.params.message));
-});
-
 app.post('/credittransfer', (request, response) => {
     response.send("credit transfer success");
+});
+
+app.get('/errors/:message', (req, res, next) => {
+    next(new Error(req.params.message));
 });
 
 app.use((err, req, res, next) => {
     Sentry.captureException(err);
     res.status(500).send({error: err.message});
-})
+});
 
 export default app;
