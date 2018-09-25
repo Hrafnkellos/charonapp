@@ -36,6 +36,11 @@ app.post('/credittransfer', (request, response) => {
     response.send("credit transfer success");
 });
 
+app.get('/error/:message', (req, res, next) => {
+    // to test erros
+    next(new Error(req.params.message));
+});
+
 app.get('/errors/:message', (req, res, next) => {
     next(new Error(req.params.message));
 });
