@@ -28,7 +28,7 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("GetPaymentsAsync");
             const response = await this.axios({
-                url: 'https://api.nordeaopenbanking.com/payments/domestic',
+                url: '/payments/domestic',
                 method: 'POST',
             });
             this.logger.timeEnd("GetPaymentsAsync");
@@ -43,7 +43,7 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("InitiatePaymentAsync");
             const response = await this.axios({
-                url: 'https://api.nordeaopenbanking.com/v2/payments/domestic',
+                url: '/payments/domestic',
                 method: 'POST',
                 data: payment,
             });
@@ -51,6 +51,36 @@ export class PaymentsPSD2Resource {
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("InitiatePaymentAsync");
+            return error;
+        }
+    }
+
+    async GetPaymentAsync(payment_id:string) {
+        try {
+            this.logger.time("GetPaymentAsync");
+            const response = await this.axios({
+                url: `/v2/payments/domestic${payment_id}`,
+                method: 'GET',
+            });
+            this.logger.timeEnd("GetPaymentAsync");
+            return response.data.response;
+        } catch (error) {
+            this.logger.timeEnd("GetPaymentAsync");
+            return error;
+        }
+    }
+
+    async ConfirmPaymentAsync(payment_id:string) {
+        try {
+            this.logger.time("ConfirmPaymentAsync");
+            const response = await this.axios({
+                url: `/v2/payments/domestic${payment_id}/confirm`,
+                method: 'GET',
+            });
+            this.logger.timeEnd("ConfirmPaymentAsync");
+            return response.data.response;
+        } catch (error) {
+            this.logger.timeEnd("ConfirmPaymentAsync");
             return error;
         }
     }
