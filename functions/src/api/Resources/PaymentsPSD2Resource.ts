@@ -24,7 +24,7 @@ export class PaymentsPSD2Resource {
         }
     }
 
-    async GetPaymentsAsync(access_token) {
+    async GetPaymentsAsync() {
         try {
             this.logger.time("GetPaymentsAsync");
             const response = await this.axios({

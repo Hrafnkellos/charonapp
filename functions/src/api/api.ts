@@ -28,19 +28,15 @@ app.use(bodyParser.json()); // support json encoded bodies
 setTokens(morgan);
 app.use(morgan(morganJsonFormat, morganOption));
 
-app.get('/', (request, response) => {
-    response.send("base endpoint for charon");
+app.get('/', (req, res, next) => {
+    res.send("base endpoint for charon");
 });
 
-app.get('/healthcheck', (request, response) => {
-    response.send({
+app.get('/healthcheck', (req, res, next) => {
+    res.send({
         processUptime: process.uptime(),
         systemUptime: os.uptime()
     });
-});
-
-app.post('/credittransfer', (request, response) => {
-    response.send("credit transfer success");
 });
 
 app.get('/error/:message', (req, res, next) => {
@@ -54,19 +50,41 @@ app.get('/errors/:message', (req, res, next) => {
 
 app.get('/login', (req, res, next) => {
     PSD2.Login();
-})
+});
+
+// Accounts
 
 app.get('/accounts', async (req, res, next) => {
     res.send(await PSD2.Accounts.GetAccountsAsync());
-})
+});
 
 app.get('/accounts/:id', async (req, res, next) => {
     res.send(await PSD2.Accounts.GetAccountDetailsAsync(req.params.id));
-})
+});
 
 app.get('/accounts/:id/transactions', async (req, res, next) => {
     res.send(await PSD2.Accounts.GetAccountTransactionsAsync(req.params.id));
-})
+});
+
+// Payments
+
+app.get('/payments/domestic', async (req, res, next) => {
+    res.send(await PSD2.Payments.GetPaymentsAsync());
+});
+
+app.get('/payments/domestic/:payment_id', async (req, res, next) => {
+    res.send(await PSD2.Payments.GetPaymentAsync(req.params.payment_id));
+});
+
+app.post('/payments/domestic', async (req, res, next) => {
+    res.send(await PSD2.Payments.GetPaymentsAsync());
+});
+
+app.put('/payments/domestic', async (req, res, next) => {
+    res.send(await PSD2.Payments.GetPaymentsAsync());
+});
+
+// catch errors
 
 app.use((err, req, res, next) => {
     Sentry.captureException(err);
