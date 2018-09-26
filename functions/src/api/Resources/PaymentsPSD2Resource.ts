@@ -4,9 +4,6 @@ import { Payment } from '../Interfaces/Payment';
 /** Accounts PSD2 Nordea Resource */
 export class PaymentsPSD2Resource {
 
-    private X_IBM_Client_ID:string = process.env.N_CLIENT_ID;
-    private X_IBM_Client_Secret:string = process.env.N_CLIENT_SEACRET;
-
     private axios:AxiosInstance;
     private logger:Console;
 
@@ -33,18 +30,11 @@ export class PaymentsPSD2Resource {
             const response = await this.axios({
                 url: 'https://api.nordeaopenbanking.com/payments/domestic',
                 method: 'POST',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    'Authorization': `Bearer ${access_token}`
-                },
             });
             this.logger.timeEnd("GetPaymentsAsync");
             return response.data.response;
         } catch (error) {
+            this.logger.timeEnd("InitiatePaymentAsync");
             return error;
         }
     }
@@ -55,18 +45,12 @@ export class PaymentsPSD2Resource {
             const response = await this.axios({
                 url: 'https://api.nordeaopenbanking.com/v2/payments/domestic',
                 method: 'POST',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                },
                 data: payment,
             });
             this.logger.timeEnd("InitiatePaymentAsync");
             return response.data.response;
         } catch (error) {
+            this.logger.timeEnd("InitiatePaymentAsync");
             return error;
         }
     }
