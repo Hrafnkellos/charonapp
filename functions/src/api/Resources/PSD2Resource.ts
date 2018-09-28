@@ -51,6 +51,6 @@ export class PSD2Resource {
             this.AccessToken = await this.Auth.GetAccessTokenAsync(this.AuthToken);
             this.axios.defaults.headers["Authorization"] = `Bearer ${this.AccessToken.access_token}`;
             this.logger.log('Access Granted');
-        }, 5000);
+        }, 8000);
     }
 }

@@ -5,7 +5,8 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import { withStyles } from '@material-ui/core/styles';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
+import AccountBalance from '@material-ui/icons/AccountBalance';
+import Payment from '@material-ui/icons/Payment';
 import * as React from 'react';
 
 const styles = (theme:any) => ({
@@ -26,11 +27,6 @@ export class NestedList extends React.Component<INestedList, any> {
     open: true,
   };
 
-  // public handleClick = () => {
-  //   alert('lol');
-  //   this.props.history.push("/accounts")
-  // };
-
   public handleClick = (path:string) => () => {
     this.props.history.push(path);
   };
@@ -46,7 +42,7 @@ export class NestedList extends React.Component<INestedList, any> {
         >
           <ListItem button={true} onClick={this.handleClick("/accounts")}>
             <ListItemIcon>
-              <InboxIcon />
+              <AccountBalance />
             </ListItemIcon>
             <ListItemText primary="Account Overview" />
           </ListItem>
@@ -58,7 +54,7 @@ export class NestedList extends React.Component<INestedList, any> {
         >
           <ListItem button={true} onClick={this.handleClick("/payments")}>
                 <ListItemIcon>
-                  <InboxIcon />
+                  <Payment />
                 </ListItemIcon>
                 <ListItemText primary="Perform Payment" />
             </ListItem>

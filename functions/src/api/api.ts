@@ -55,6 +55,7 @@ app.get('/errors/:message', (req, res, next) => {
 
 app.get('/login', (req, res, next) => {
   PSD2.Login();
+  res.send('ok');
 });
 
 // Accounts

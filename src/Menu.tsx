@@ -45,6 +45,13 @@ class MenuAppBar extends Component<IMenuAppBar,any> {
     this.setState({ anchorEl: null });
   };
 
+
+  public handleLogin = () => {
+    fetch('https://us-central1-charon-lb.cloudfunctions.net/api/login')
+      .then(response => response.json())
+      .then(jsonResponse => alert(JSON.stringify(jsonResponse)));
+  };
+
   public toggleDrawer = (side:any, open:any) => () => {
     this.setState({
       [side]: open,
@@ -112,7 +119,7 @@ class MenuAppBar extends Component<IMenuAppBar,any> {
                   onClose={this.handleClose}
                 >
                   <MenuItem onClick={this.handleClose}>Profile</MenuItem>
-                  <MenuItem onClick={this.handleClose}>My account</MenuItem>
+                  <MenuItem onClick={this.handleLogin}>login</MenuItem>
                 </Menu>
               </div>
             )}

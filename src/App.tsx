@@ -13,7 +13,7 @@ class App extends React.Component<any> {
 
     fetch('https://us-central1-charon-lb.cloudfunctions.net/api/healthcheck')
       .then(response => response.json())
-      .then(jsonResponse => alert(jsonResponse));
+      .then(jsonResponse => alert(JSON.stringify(jsonResponse)));
   }
 
   public render() {
