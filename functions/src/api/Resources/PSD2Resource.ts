@@ -47,7 +47,6 @@ export class PSD2Resource {
     private async waitForToken():Promise<void> {
         setTimeout(async () => {
             this.AuthToken = await this.Auth.GetAuthorizationTokenAsync(await this.thirdPartyTokenCombo.order_ref);
-            // } while( typeof this.AuthToken !== 'string' && this.AuthToken.response.status !== 200 || tries < 0)
             // we get Access token
             this.AccessToken = await this.Auth.GetAccessTokenAsync(this.AuthToken);
             this.axios.defaults.headers["Authorization"] = `Bearer ${this.AccessToken.access_token}`;
