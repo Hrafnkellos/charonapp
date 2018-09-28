@@ -8,6 +8,7 @@ import { morganOption } from '../api/config/winston.config';
 import { morganJsonFormat, setTokens } from '../api/config/morgan.config';
 import * as Sentry from '@sentry/node';
 import { PSD2Resource } from './Resources/PSD2Resource';
+import { Payment } from './Interfaces/Payment';
 
 Sentry.init({ dsn: 'https://edd622d651324f54baa8c13f6809a5e5@sentry.io/1286393' });
 const logger = console;
@@ -28,6 +29,8 @@ app.use(bodyParser.json()); // support json encoded bodies
 setTokens(morgan);
 app.use(morgan(morganJsonFormat, morganOption));
 
+// system
+
 app.get('/', (req, res, next) => {
   res.send("base endpoint for charon");
 });
@@ -47,6 +50,8 @@ app.get('/error/:message', (req, res, next) => {
 app.get('/errors/:message', (req, res, next) => {
   next(new Error(req.params.message));
 });
+
+// Authorization
 
 app.get('/login', (req, res, next) => {
   PSD2.Login();
@@ -77,7 +82,8 @@ app.get('/payments/domestic/:payment_id', async (req, res, next) => {
 });
 
 app.post('/payments/domestic', async (req, res, next) => {
-  res.send(await PSD2.Payments.GetPaymentsAsync());
+  const payment = req.body as Payment;
+  res.send(await PSD2.Payments.InitiatePaymentAsync(payment));
 });
 
 app.put('/payments/domestic/:payment_id', async (req, res, next) => {
