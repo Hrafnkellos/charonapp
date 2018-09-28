@@ -6,9 +6,6 @@ import { PaymentsPSD2Resource } from './PaymentsPSD2Resource';
 /** Accounts PSD2 Nordea Resource */
 export class PSD2Resource {
 
-    // private X_IBM_Client_ID:string = process.env.N_CLIENT_ID;
-    // private X_IBM_Client_Secret:string = process.env.N_CLIENT_SEACRET;
-
     private thirdPartyTokenCombo;
     private AuthToken;
     private AccessToken;
@@ -39,15 +36,15 @@ export class PSD2Resource {
         })();
     }
 
-    public async Login() {
+    public async Login():Promise<void> {
         this.logger.log('Granting access');
         // we get third party provider token
         this.thirdPartyTokenCombo = await this.Auth.GetThirdPartyProviderTokenAsync();
-        this.axios.defaults.headers["Authorization"] = `Bearer ${await this.thirdPartyTokenCombo.tpp_token}`;
+        this.axios.defaults.headers["Authorization"] = `Bearer ${this.thirdPartyTokenCombo.tpp_token}`;
         this.waitForToken();
     }
 
-    private async waitForToken() {
+    private async waitForToken():Promise<void> {
         setTimeout(async () => {
             this.AuthToken = await this.Auth.GetAuthorizationTokenAsync(await this.thirdPartyTokenCombo.order_ref);
             // } while( typeof this.AuthToken !== 'string' && this.AuthToken.response.status !== 200 || tries < 0)

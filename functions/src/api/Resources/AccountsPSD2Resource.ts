@@ -23,7 +23,7 @@ export class AccountsPSD2Resource {
         }
     }
 
-    async GetAccountsAsync() {
+    async GetAccountsAsync():Promise<any> {
         try {
             this.logger.time("GetAccountsAsync");
             const response = await this.axios({
@@ -32,7 +32,7 @@ export class AccountsPSD2Resource {
             });
             this.logger.timeEnd("GetAccountsAsync");
             const {accounts} = response.data.response;
-            return { 
+            return {
                 accounts
             };
         } catch (error) {
@@ -40,7 +40,7 @@ export class AccountsPSD2Resource {
         }
     }
 
-    async GetAccountDetailsAsync(account_id) {
+    async GetAccountDetailsAsync(account_id):Promise<any> {
         try {
             this.logger.time("GetAccountDetailsAsync");
             const response = await this.axios({
@@ -55,7 +55,7 @@ export class AccountsPSD2Resource {
         }
     }
 
-    async GetAccountTransactionsAsync(account_id) {
+    async GetAccountTransactionsAsync(account_id):Promise<any> {
         try {
             this.logger.time("GetAccountTransactionsAsync");
             const response = await this.axios({

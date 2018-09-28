@@ -29,66 +29,67 @@ setTokens(morgan);
 app.use(morgan(morganJsonFormat, morganOption));
 
 app.get('/', (req, res, next) => {
-    res.send("base endpoint for charon");
+  res.send("base endpoint for charon");
 });
 
 app.get('/healthcheck', (req, res, next) => {
-    res.send({
-        processUptime: process.uptime(),
-        systemUptime: os.uptime()
-    });
+  res.send({
+    processUptime: process.uptime(),
+    systemUptime: os.uptime()
+  });
 });
 
 app.get('/error/:message', (req, res, next) => {
-    // to test erros
-    next(new Error(req.params.message));
+  // to test erros
+  next(new Error(req.params.message));
 });
 
 app.get('/errors/:message', (req, res, next) => {
-    next(new Error(req.params.message));
+  next(new Error(req.params.message));
 });
 
 app.get('/login', (req, res, next) => {
-    PSD2.Login();
+  PSD2.Login();
 });
 
 // Accounts
 
 app.get('/accounts', async (req, res, next) => {
-    res.send(await PSD2.Accounts.GetAccountsAsync());
+  res.send(await PSD2.Accounts.GetAccountsAsync());
 });
 
 app.get('/accounts/:id', async (req, res, next) => {
-    res.send(await PSD2.Accounts.GetAccountDetailsAsync(req.params.id));
+  res.send(await PSD2.Accounts.GetAccountDetailsAsync(req.params.id));
 });
 
 app.get('/accounts/:id/transactions', async (req, res, next) => {
-    res.send(await PSD2.Accounts.GetAccountTransactionsAsync(req.params.id));
+  res.send(await PSD2.Accounts.GetAccountTransactionsAsync(req.params.id));
 });
 
 // Payments
 
 app.get('/payments/domestic', async (req, res, next) => {
-    res.send(await PSD2.Payments.GetPaymentsAsync());
+  res.send(await PSD2.Payments.GetPaymentsAsync());
 });
 
 app.get('/payments/domestic/:payment_id', async (req, res, next) => {
-    res.send(await PSD2.Payments.GetPaymentAsync(req.params.payment_id));
+  res.send(await PSD2.Payments.GetPaymentAsync(req.params.payment_id));
 });
 
 app.post('/payments/domestic', async (req, res, next) => {
-    res.send(await PSD2.Payments.GetPaymentsAsync());
+  res.send(await PSD2.Payments.GetPaymentsAsync());
 });
 
-app.put('/payments/domestic', async (req, res, next) => {
-    res.send(await PSD2.Payments.GetPaymentsAsync());
+app.put('/payments/domestic/:payment_id', async (req, res, next) => {
+  const id = req.params.payment_id;
+  res.send(await PSD2.Payments.ConfirmPaymentAsync(id));
 });
 
 // catch errors
 
 app.use((err, req, res, next) => {
-    Sentry.captureException(err);
-    res.status(500).send({error: err.message});
+  Sentry.captureException(err);
+  res.status(500).send({error: err.message});
 });
 
 export default app;
