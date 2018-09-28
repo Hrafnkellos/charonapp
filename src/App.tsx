@@ -1,5 +1,6 @@
 import * as React from 'react';
 import './App.css';
+import MenuAppBar from './Menu';
 
 import logo from './logo.svg';
 
@@ -16,6 +17,7 @@ class App extends React.Component {
   public render() {
     return (
       <div className="App">
+        <MenuAppBar/>
         <header className="App-header">
           <img src={logo} className="App-logo" alt="logo" />
           <h1 className="App-title">Welcome to React</h1>

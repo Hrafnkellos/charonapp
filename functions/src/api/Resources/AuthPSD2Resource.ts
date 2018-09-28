@@ -2,9 +2,6 @@ import { AxiosInstance } from 'axios';
 
 export class AuthPSD2Resource {
 
-    private X_IBM_Client_ID:string = process.env.N_CLIENT_ID;
-    private X_IBM_Client_Secret:string = process.env.N_CLIENT_SEACRET;
-
     private axios:AxiosInstance;
     private logger:Console;
 
@@ -29,15 +26,8 @@ export class AuthPSD2Resource {
         try {
             this.logger.time("GetThirdPartyProviderTokenAsync");
             const response = await this.axios({
-                url: 'https://api.nordeaopenbanking.com/v2/authorize-decoupled',
+                url: '/authorize-decoupled',
                 method: 'POST',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                },
                 data: { 
                     "response_type": "nordea_code",
                     "psu_id": "193805010844",
@@ -56,53 +46,43 @@ export class AuthPSD2Resource {
                 tpp_token
             };
         } catch (error) {
+            this.logger.timeEnd("GetThirdPartyProviderTokenAsync");
             return error;
         }
     }
 
-    async GetAuthorizationTokenAsync(tppCombo) {
+    async GetAuthorizationTokenAsync(order_ref) {
         try {
             this.logger.time("GetAuthorizationTokenAsync");
             const response = await this.axios({
-                url: `https://api.nordeaopenbanking.com/v2/authorize-decoupled/${tppCombo.order_ref}`,
+                url: `/authorize-decoupled/${order_ref}`,
                 method: 'GET',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    "Authorization": `Bearer ${tppCombo.tpp_token}`,
-                },
             });
             this.logger.timeEnd("GetAuthorizationTokenAsync");
-            const {code} = response.data.response;
-            return { 
-                code,
-            };
+            return response.data.response.code;
         } catch (error) {
+            this.logger.timeEnd("GetAuthorizationTokenAsync");
+            this.logger.log('error');
             return error;
         }
     }
 
-    async GetAccessTokenAsync(tppCombo, code) {
+    async GetAccessTokenAsync(code) {
         try {
             this.logger.time("GetAccessTokenAsync");
             const response = await this.axios({
-                url: "https://api.nordeaopenbanking.com/v2/authorize-decoupled/token",
-                method: 'GET',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    "Authorization": `Bearer ${tppCombo.tpp_token}`,
+                url: "/authorize-decoupled/token",
+                method: 'POST',
+                data: {
+                    "grant_type": "authorization_code",
+                    "code": code,
+                    "redirect_uri": "https://httpbin.org/get",
                 },
             });
             this.logger.timeEnd("GetAccessTokenAsync");
-            return response.data.response;
+            return response.data;
         } catch (error) {
+            this.logger.timeEnd("GetAccessTokenAsync");
             return error;
         }
     }

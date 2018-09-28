@@ -3,9 +3,6 @@ import { AxiosInstance } from 'axios';
 /** Accounts PSD2 Nordea Resource */
 export class AccountsPSD2Resource {
 
-    private X_IBM_Client_ID:string = process.env.N_CLIENT_ID;
-    private X_IBM_Client_Secret:string = process.env.N_CLIENT_SEACRET;
-
     private axios:AxiosInstance;
     private logger:Console;
 
@@ -26,20 +23,12 @@ export class AccountsPSD2Resource {
         }
     }
 
-    async GetAccountsAsync(access_token) {
+    async GetAccountsAsync() {
         try {
             this.logger.time("GetAccountsAsync");
             const response = await this.axios({
-                url: 'https://api.nordeaopenbanking.com/v2/accounts',
+                url: '/accounts',
                 method: 'GET',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    'Authorization': `Bearer ${access_token}`
-                },
             });
             this.logger.timeEnd("GetAccountsAsync");
             const {accounts} = response.data.response;
@@ -51,42 +40,27 @@ export class AccountsPSD2Resource {
         }
     }
 
-    async GetAccountDetailsAsync(access_token, account_id) {
+    async GetAccountDetailsAsync(account_id) {
         try {
             this.logger.time("GetAccountDetailsAsync");
             const response = await this.axios({
-                url: `https://api.nordeaopenbanking.com/v2/accounts/${account_id}`,
+                url: `/accounts/${account_id}`,
                 method: 'GET',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    'Authorization': `Bearer ${access_token}`
-                },
             });
             this.logger.timeEnd("GetAccountDetailsAsync");
             return response.data.response;
         } catch (error) {
+            this.logger.timeEnd("GetAccountDetailsAsync");
             return error;
         }
     }
 
-    async GetAccountTransactionsAsync(access_token, account_id) {
+    async GetAccountTransactionsAsync(account_id) {
         try {
             this.logger.time("GetAccountTransactionsAsync");
             const response = await this.axios({
-                url: `https://api.nordeaopenbanking.com/v2/accounts/${account_id}/transactions`,
+                url: `/accounts/${account_id}/transactions`,
                 method: 'GET',
-                maxRedirects: 0,
-                headers: {
-                    "Accept":"application/json",
-                    "Content-Type":"application/json",
-                    "X-IBM-Client-ID": this.X_IBM_Client_ID,
-                    "X-IBM-Client-Secret": this.X_IBM_Client_Secret,
-                    'Authorization': `Bearer ${access_token}`
-                },
             });
             this.logger.timeEnd("GetAccountTransactionsAsync");
             const { transactions } = response.data.response;
@@ -94,6 +68,7 @@ export class AccountsPSD2Resource {
                 transactions
             };
         } catch (error) {
+            this.logger.timeEnd("GetAccountTransactionsAsync");
             return error;
         }
     }
