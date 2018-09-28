@@ -1,10 +1,12 @@
+import CssBaseline from '@material-ui/core/CssBaseline';
 import * as React from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
+import Accounts from './AccountsPage';
 import './App.css';
 import MenuAppBar from './Menu';
+import Payments from './PaymentsPage';
 
-import logo from './logo.svg';
-
-class App extends React.Component {
+class App extends React.Component<any> {
 
   constructor(props:any) {
     super(props);
@@ -15,17 +17,31 @@ class App extends React.Component {
   }
 
   public render() {
-    return (
-      <div className="App">
-        <MenuAppBar/>
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.tsx</code> and save to reload.
-        </p>
+    const Home = () => (
+      <header className="App-header">
+        <img src={"https://assets.l.is/img/logo.png"} className="App-logo" alt="logo" />
+        <h1 className="App-title">Welcome to Charon</h1>
+    </header>
+    );
+
+    const Base = (props:any) => (
+      <div>
+        <CssBaseline />
+        <MenuAppBar history={props.history}/>
+        <div className="App">
+          <Route path='/' exact={true} component={Home}/>
+          <Route path='/accounts' component={Accounts}/>
+          <Route path='/payments' component={Payments}/>
+        </div>
       </div>
+    );
+    
+    return (
+      <Router>
+        <div>
+          <Route render={Base}/>
+        </div>
+      </Router>
     );
   }
 }
