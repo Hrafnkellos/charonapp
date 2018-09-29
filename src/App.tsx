@@ -11,9 +11,9 @@ class App extends React.Component<any> {
   constructor(props:any) {
     super(props);
 
-    fetch('https://us-central1-charon-lb.cloudfunctions.net/api/healthcheck')
-      .then(response => response.json())
-      .then(jsonResponse => alert(JSON.stringify(jsonResponse)));
+    // fetch('https://us-central1-charon-lb.cloudfunctions.net/api/healthcheck')
+    //   .then(response => response.json())
+    //   .then(jsonResponse => alert(JSON.stringify(jsonResponse)));
   }
 
   public render() {
@@ -30,12 +30,12 @@ class App extends React.Component<any> {
         <MenuAppBar history={props.history}/>
         <div className="App">
           <Route path='/' exact={true} component={Home}/>
-          <Route path='/accounts' component={Accounts}/>
+          <Route path='/accounts' component={Accounts} classes={props.classes}/>
           <Route path='/payments' component={Payments}/>
         </div>
       </div>
     );
-    
+
     return (
       <Router>
         <div>

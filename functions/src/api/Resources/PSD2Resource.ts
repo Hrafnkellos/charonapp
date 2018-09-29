@@ -3,7 +3,6 @@ import { AuthPSD2Resource } from './AuthPSD2Resource';
 import { AccountsPSD2Resource } from './AccountsPSD2Resource';
 import { PaymentsPSD2Resource } from './PaymentsPSD2Resource';
 
-/** Accounts PSD2 Nordea Resource */
 export class PSD2Resource {
 
     private thirdPartyTokenCombo;
