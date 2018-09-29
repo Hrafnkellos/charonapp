@@ -11,4 +11,4 @@ const PSD2 = new PSD2Resource(axiosInstance, logger, X_IBM_Client_ID, X_IBM_Clie
 setTimeout(async () => {
     const tokenCombo = await PSD2.Accounts.GetAccountsAsync();
     console.log( tokenCombo);
-},7000);
+},10000);

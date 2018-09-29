@@ -47,6 +47,7 @@ export class AuthPSD2Resource {
             };
         } catch (error) {
             this.logger.timeEnd("GetThirdPartyProviderTokenAsync");
+            this.logger.log('error',error);
             return error;
         }
     }
@@ -62,7 +63,7 @@ export class AuthPSD2Resource {
             return response.data.response.code;
         } catch (error) {
             this.logger.timeEnd("GetAuthorizationTokenAsync");
-            this.logger.log('error');
+            this.logger.log('error',error);
             return error;
         }
     }
@@ -83,6 +84,7 @@ export class AuthPSD2Resource {
             return response.data;
         } catch (error) {
             this.logger.timeEnd("GetAccessTokenAsync");
+            this.logger.log('error',error);
             return error;
         }
     }
