@@ -14,6 +14,7 @@ export class PSD2Resource {
     public Auth:AuthPSD2Resource;
     public Accounts:AccountsPSD2Resource;
     public Payments:PaymentsPSD2Resource;
+    private retries:number;
 
     constructor(axios:AxiosInstance, logger:Console, clientId:string, clientSeacret:string) {
         axios.defaults.baseURL = "https://api.nordeaopenbanking.com/v2";
@@ -28,6 +29,7 @@ export class PSD2Resource {
         this.logger = logger;
         this.Auth = new AuthPSD2Resource(this.axios, this.logger);
         const context = this;
+        this.retries = 0;
         context.Accounts = new AccountsPSD2Resource(context.axios, context.logger);
         context.Payments = new PaymentsPSD2Resource(context.axios, context.logger);
 
@@ -47,10 +49,17 @@ export class PSD2Resource {
     private async waitForToken():Promise<void> {
         setTimeout(async () => {
             this.AuthToken = await this.Auth.GetAuthorizationTokenAsync(await this.thirdPartyTokenCombo.order_ref);
+            if(typeof this.AuthToken !== 'string' && this.retries < 5) {
+                this.waitForToken();
+                this.retries++;
+                return;
+            } else {
+                this.retries = 0;
+            }
             // we get Access token
             this.AccessToken = await this.Auth.GetAccessTokenAsync(this.AuthToken);
             this.axios.defaults.headers["Authorization"] = `Bearer ${this.AccessToken.access_token}`;
             this.logger.log('Access Granted');
-        }, 8000);
+        }, 5000);
     }
 }
