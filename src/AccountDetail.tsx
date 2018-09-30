@@ -4,17 +4,12 @@ import * as React from 'react';
 import { Component } from 'react';
 import { Account } from '../functions/src/api/Interfaces/Account';
 
-export class AccountListItem extends Component<IAccountListItem ,any> {
-
-  public SelectAccount = () => () => {
-    this.props.select(this.props.index);
-  };
-
+export class AccountDetail extends Component<IAccountDetail ,any> {
   public render() {
-    const { account } = this.props;
+    const {  account } = this.props;
 
     return (
-      <Paper elevation={1} style={{padding: 20, cursor: 'pointer'}} onClick={this.SelectAccount()}>
+      <Paper elevation={1} style={{padding: 20}}>
         <Typography variant="headline" component="h3">
           {account._id}
         </Typography>
@@ -32,8 +27,6 @@ export class AccountListItem extends Component<IAccountListItem ,any> {
   }
 }
 
-interface IAccountListItem {
-  account: Account;
-  index: number;
-  select: any;
+interface IAccountDetail {
+  account: Account,
 };
