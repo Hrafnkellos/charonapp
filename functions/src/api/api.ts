@@ -85,7 +85,13 @@ app.get('/payments/domestic/:payment_id', async (req, res, next) => {
 
 app.post('/payments/domestic', async (req, res, next) => {
   const payment = req.body as Payment;
-  res.send(await PSD2.Payments.InitiatePaymentAsync(payment));
+  logger.log(payment);
+  try {
+    res.send(await PSD2.Payments.InitiatePaymentAsync(payment));
+  } catch (ex) {
+    logger.log(ex);
+    res.status(ex.response.data.error.httpCode).send(ex.response.data.error.failures);
+  }
 });
 
 app.put('/payments/domestic/:payment_id', async (req, res, next) => {

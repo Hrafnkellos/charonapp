@@ -4,6 +4,16 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+          {
+            "name": "serverDebug",
+            "type": "node",
+            "request": "launch",
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "args": [
+                "${workspaceFolder}\\functions\\src\\api\\server.ts"
+            ],
+            "cwd": "${workspaceFolder}\\functions",
+        },
         {
             "name": "Test",
             "type": "node",

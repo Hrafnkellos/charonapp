@@ -17,7 +17,7 @@ class Accounts extends Component<IAccounts,ISAccounts> {
 
   constructor(props:any) {
     super(props);
-    this.state = { accounts: [], selectedAccount: 0 };
+    this.state = { accounts: [], selectedAccount: 0, transactions: []};
     fetch('http://localhost:5000/charon-lb/us-central1/api/accounts') // 'https://us-central1-charon-lb.cloudfunctions.net/api/accounts')
     .then(response => response.json())
     .then(jsonResponse => {
@@ -31,6 +31,14 @@ class Accounts extends Component<IAccounts,ISAccounts> {
     this.setState({
       selectedAccount,
     });
+
+    fetch(`http://localhost:5000/charon-lb/us-central1/api/accounts/${this.state.accounts[this.state.selectedAccount]._id}/transactions`) // 'https://us-central1-charon-lb.cloudfunctions.net/api/accounts')
+    .then(response => response.json())
+    .then(jsonResponse => {
+      this.setState({
+        transactions: jsonResponse.transactions
+      });
+    });
   };
 
   public render() {
@@ -39,7 +47,7 @@ class Accounts extends Component<IAccounts,ISAccounts> {
       <div className={classes.root}>
         <List component="nav">
           <Grid container={true} spacing={24}>
-            <Grid item={true} container={true} xs={4} spacing={24}>
+            <Grid item={true} container={true} xs={4} spacing={24} style={{flexWrap: 'wrap',alignSelf: 'flex-start'}}>
               {this.state.accounts.map((account:Account, index:number) =>
                 <Grid item={true} xs={12}  key={account._id}>
                   <AccountListItem account={account} index={index} select={this.SelectAccount}/>
@@ -48,7 +56,7 @@ class Accounts extends Component<IAccounts,ISAccounts> {
             </Grid>
             <Grid item={true} container={true} xs={8} spacing={24}>
               <Grid item={true} xs={12}>
-                { this.state.accounts.length > 0 && <AccountDetail account={this.state.accounts[this.state.selectedAccount]}/> }
+                { this.state.accounts.length > 0 && <AccountDetail account={this.state.accounts[this.state.selectedAccount]} transactions={this.state.transactions}/> }
               </Grid>
             </Grid>
           </Grid>
@@ -65,6 +73,25 @@ interface IAccounts {
 interface ISAccounts {
   accounts:Account[];
   selectedAccount:number;
+  transactions: ITransaction[];
 }
+
+export interface ITransaction {
+  amount: string;
+  balanceAfterTransaction: string;
+  bookingDate: string;
+  cardNumber?: string;
+  counterpartyName?: string;
+  currency: string;
+  currencyRate?: string
+  message?:string;
+  reference?:string;
+  status:string;
+  transactionDate?:string;
+  transactionId:string;
+  typeDescription?:string;
+  valueDate?:string;
+}
+
 
 export default withStyles(styles)(Accounts);

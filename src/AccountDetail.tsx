@@ -3,10 +3,17 @@ import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { Component } from 'react';
 import { Account } from '../functions/src/api/Interfaces/Account';
+import { ITransaction } from './AccountsPage';
+import { TransactionList } from './TransactionList';
 
-export class AccountDetail extends Component<IAccountDetail ,any> {
+export class AccountDetail extends Component<IAccountDetail, any> {
+
+  constructor(props:any) {
+    super(props);
+  }
+
   public render() {
-    const {  account } = this.props;
+    const {  account, transactions } = this.props;
 
     return (
       <Paper elevation={1} style={{padding: 20}}>
@@ -22,6 +29,10 @@ export class AccountDetail extends Component<IAccountDetail ,any> {
         <Typography component="p">
           Bank: {account.bank.name}
         </Typography>
+        <Typography component="h4">
+          Transactions
+        </Typography>
+        <TransactionList transactions={transactions}/>
       </Paper>
     );
   }
@@ -29,4 +40,5 @@ export class AccountDetail extends Component<IAccountDetail ,any> {
 
 interface IAccountDetail {
   account: Account,
+  transactions: ITransaction[],
 };

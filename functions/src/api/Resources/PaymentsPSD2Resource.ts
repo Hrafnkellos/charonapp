@@ -28,8 +28,8 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("GetPaymentsAsync");
             const response = await this.axios({
-                url: '/payments/domestic',
-                method: 'POST',
+              url: '/payments/domestic',
+              method: 'POST',
             });
             this.logger.timeEnd("GetPaymentsAsync");
             return response.data.response;
@@ -43,15 +43,15 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("InitiatePaymentAsync");
             const response = await this.axios({
-                url: '/payments/domestic',
-                method: 'POST',
-                data: payment,
+              url: '/payments/domestic',
+              method: 'POST',
+              data: payment,
             });
             this.logger.timeEnd("InitiatePaymentAsync");
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("InitiatePaymentAsync");
-            return error;
+            throw error;
         }
     }
 
@@ -59,8 +59,8 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("GetPaymentAsync");
             const response = await this.axios({
-                url: `/v2/payments/domestic${payment_id}`,
-                method: 'GET',
+              url: `/v2/payments/domestic${payment_id}`,
+              method: 'GET',
             });
             this.logger.timeEnd("GetPaymentAsync");
             return response.data.response;
@@ -74,8 +74,8 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("ConfirmPaymentAsync");
             const response = await this.axios({
-                url: `/v2/payments/domestic${payment_id}/confirm`,
-                method: 'GET',
+              url: `/v2/payments/domestic${payment_id}/confirm`,
+              method: 'GET',
             });
             this.logger.timeEnd("ConfirmPaymentAsync");
             return response.data.response;

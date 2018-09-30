@@ -1,3 +1,4 @@
+import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 // import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
@@ -17,9 +18,9 @@ class Payments extends Component<any,ISPayment> {
         amount: "",
         creditor: {
           account: {
-            _type: "",
+            _type: "BBAN_SE",
             currency: "SEK",
-            value: "",
+            value: "13370233835",
           },
           message:"",
           name: "",
@@ -27,19 +28,36 @@ class Payments extends Component<any,ISPayment> {
         currency: "SEK",
         debtor: {
           account: {
-            _type: "",
-            currency: "",
-            value: ""
+            _type: "BBAN_SE",
+            currency: "SEK",
+            value: "41770042136"
           }
         }
-
       }
     }
   }
 
-  public PerformPayment() {
-    alert("not implemented");
-  };
+  public PerformPayment = () => {
+
+    const myRequest = new Request("http://localhost:5000/payments/domestic",{// 'http://localhost:5000/charon-lb/us-central1/api/payments/domestic', {
+      body: JSON.stringify(this.state.payment),
+      cache: 'default',
+      headers: new Headers({
+        "Content-Type": "application/json",
+      }) ,
+      method: 'POST',
+      mode: 'cors',
+    } as RequestInit);
+
+    fetch(myRequest)
+    .then(response => response.json())
+    .then(jsonResponse => {
+      const temp = console;
+      temp.log(jsonResponse);
+      // this.setState({
+      //   accounts: jsonResponse.accounts
+      // });
+    });  };
 
   public handleChange = (name:string) => (event:any) => {
     this.setState({
@@ -49,6 +67,23 @@ class Payments extends Component<any,ISPayment> {
       }
     });
   };
+
+  public handleChangeCreditAccount = (type:string) => (event:any) => {
+    this.setState({
+      payment: {
+        ...this.state.payment,
+        [type]: {
+          ...this.state.payment[type],
+          account: {
+            ...this.state.payment[type].account,
+            value: event.target.value,
+          }
+        },
+      }
+    });
+  };
+
+
 
   public render() {
     return (
@@ -62,13 +97,38 @@ class Payments extends Component<any,ISPayment> {
             </Grid>
             <Grid item={true} xs={12}>
               <form noValidate={true} autoComplete="off">
-                <TextField
-                  id="amount"
-                  label="Amount"
-                  value={this.state.payment.amount}
-                  onChange={this.handleChange('amount')}
-                  margin="normal"
-                />
+                <Grid item={true} xs={12}>
+                  <TextField
+                    id="amount"
+                    label="Amount"
+                    value={this.state.payment.amount}
+                    onChange={this.handleChange('amount')}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item={true} xs={12}>
+                  <TextField
+                    id="PayerAccoutNumber"
+                    label="PayerAccoutNumber"
+                    value={this.state.payment.creditor.account.value}
+                    onChange={this.handleChangeCreditAccount("creditor")}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item={true} xs={12}>
+                  <TextField
+                    id="ReceiverAccoutNumber"
+                    label="ReceiverAccoutNumber"
+                    value={this.state.payment.debtor.account.value}
+                    onChange={this.handleChangeCreditAccount("debtor")}
+                    margin="normal"
+                  />
+                </Grid>
+                <Grid item={true} xs={12} style={{marginTop:15}}>
+                  <Button variant="contained" color="primary" onClick={this.PerformPayment}>
+                    Transfer
+                  </Button>
+                </Grid>
               </form>
             </Grid>
           </Grid>
