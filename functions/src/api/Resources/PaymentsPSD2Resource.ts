@@ -12,30 +12,19 @@ export class PaymentsPSD2Resource {
         this.logger = logger;
     }
 
-    ErrorHandler(err, response, body, cb) {
-        if(err) {
-            err.statusCode = 500;
-            cb(err);
-            return;
-        }
-        if(response.statusCode >= 400) {
-            cb(body);
-            return;
-        }
-    }
-
     async GetPaymentsAsync() {
         try {
             this.logger.time("GetPaymentsAsync");
             const response = await this.axios({
               url: '/payments/domestic',
-              method: 'POST',
+              method: 'GET',
             });
             this.logger.timeEnd("GetPaymentsAsync");
             return response.data.response;
         } catch (error) {
-            this.logger.timeEnd("InitiatePaymentAsync");
-            return error;
+            this.logger.timeEnd("GetPaymentsAsync");
+            this.logger.log(error);
+            throw error;
         }
     }
 
@@ -51,6 +40,7 @@ export class PaymentsPSD2Resource {
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("InitiatePaymentAsync");
+            this.logger.log(error);
             throw error;
         }
     }
@@ -59,14 +49,15 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("GetPaymentAsync");
             const response = await this.axios({
-              url: `/v2/payments/domestic${payment_id}`,
+              url: `/payments/domestic/${payment_id}`,
               method: 'GET',
             });
             this.logger.timeEnd("GetPaymentAsync");
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("GetPaymentAsync");
-            return error;
+            this.logger.log(error);
+            throw error;
         }
     }
 
@@ -74,14 +65,15 @@ export class PaymentsPSD2Resource {
         try {
             this.logger.time("ConfirmPaymentAsync");
             const response = await this.axios({
-              url: `/v2/payments/domestic${payment_id}/confirm`,
-              method: 'GET',
+              url: `/payments/domestic/${payment_id}/confirm`,
+              method: 'PUT'
             });
             this.logger.timeEnd("ConfirmPaymentAsync");
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("ConfirmPaymentAsync");
-            return error;
+            this.logger.log(error);
+            throw error;
         }
     }
 }

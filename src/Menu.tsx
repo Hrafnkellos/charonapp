@@ -91,7 +91,7 @@ class MenuAppBar extends Component<IMenuAppBar,any> {
               <MenuIcon />
             </IconButton>
             <Typography variant="title" color="inherit" className={classes.grow}>
-              <Link to="/" style={{textDecoration: 'none', color: 'white'}}>Charon</Link> - <span style={{fontSize:20, textTransform: 'capitalize'}}>{history.location.pathname.replace("/","")}</span>
+              <Link to="/" style={{textDecoration: 'none', color: 'white'}}>Charon</Link>  <span style={{fontSize:20, textTransform: 'capitalize'}}>{history.location.pathname.replace("/","")}</span>
             </Typography>
             {auth && (
               <div>

@@ -3,7 +3,7 @@ import List from '@material-ui/core/List';
 import { withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
 import { Component } from 'react';
-import { Account } from '../functions/src/api/Interfaces/Account';
+import { Account } from '../../functions/src/api/Interfaces/Account';
 import { AccountDetail } from './AccountDetail';
 import { AccountListItem } from './AccountListItem';
 
@@ -15,10 +15,13 @@ const styles = (theme:any) => ({
 
 class Accounts extends Component<IAccounts,ISAccounts> {
 
+  // private host = 'http://localhost:5000/charon-lb/us-central1/api/accounts';
+  private host = 'https://us-central1-charon-lb.cloudfunctions.net/api/accounts';
+
   constructor(props:any) {
     super(props);
     this.state = { accounts: [], selectedAccount: 0, transactions: []};
-    fetch('http://localhost:5000/charon-lb/us-central1/api/accounts') // 'https://us-central1-charon-lb.cloudfunctions.net/api/accounts')
+    fetch(this.host)
     .then(response => response.json())
     .then(jsonResponse => {
       this.setState({
@@ -32,7 +35,7 @@ class Accounts extends Component<IAccounts,ISAccounts> {
       selectedAccount,
     });
 
-    fetch(`http://localhost:5000/charon-lb/us-central1/api/accounts/${this.state.accounts[this.state.selectedAccount]._id}/transactions`) // 'https://us-central1-charon-lb.cloudfunctions.net/api/accounts')
+    fetch(`${this.host}/${this.state.accounts[this.state.selectedAccount]._id}/transactions`)
     .then(response => response.json())
     .then(jsonResponse => {
       this.setState({

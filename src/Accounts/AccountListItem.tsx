@@ -2,7 +2,7 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { Component } from 'react';
-import { Account } from '../functions/src/api/Interfaces/Account';
+import { Account } from '../../functions/src/api/Interfaces/Account';
 
 export class AccountListItem extends Component<IAccountListItem ,any> {
 

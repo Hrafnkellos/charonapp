@@ -11,32 +11,22 @@ export class AccountsPSD2Resource {
         this.logger = logger;
     }
 
-    ErrorHandler(err, response, body, cb) {
-        if(err) {
-            err.statusCode = 500;
-            cb(err);
-            return;
-        }
-        if(response.statusCode >= 400) {
-            cb(body);
-            return;
-        }
-    }
-
     async GetAccountsAsync():Promise<any> {
         try {
-            this.logger.time("GetAccountsAsync");
-            const response = await this.axios({
-                url: '/accounts',
-                method: 'GET',
-            });
-            this.logger.timeEnd("GetAccountsAsync");
-            const {accounts} = response.data.response;
-            return {
-                accounts
-            };
+          this.logger.time("GetAccountsAsync");
+          const response = await this.axios({
+              url: '/accounts',
+              method: 'GET',
+          });
+          this.logger.timeEnd("GetAccountsAsync");
+          const {accounts} = response.data.response;
+          return {
+              accounts
+          };
         } catch (error) {
-            return error;
+          this.logger.timeEnd("GetAccountsAsync");
+          this.logger.log(error);
+          throw error;
         }
     }
 
@@ -51,7 +41,8 @@ export class AccountsPSD2Resource {
             return response.data.response;
         } catch (error) {
             this.logger.timeEnd("GetAccountDetailsAsync");
-            return error;
+            this.logger.log(error);
+            throw error;
         }
     }
 
@@ -69,7 +60,8 @@ export class AccountsPSD2Resource {
             };
         } catch (error) {
             this.logger.timeEnd("GetAccountTransactionsAsync");
-            return error;
+            this.logger.log(error);
+            throw error;
         }
     }
 }

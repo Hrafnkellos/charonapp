@@ -10,25 +10,13 @@ export class AuthPSD2Resource {
         this.logger = logger;
     }
 
-    ErrorHandler(err, response, body, cb) {
-        if(err) {
-            err.statusCode = 500;
-            cb(err);
-            return;
-        }
-        if(response.statusCode >= 400) {
-            cb(body);
-            return;
-        }
-    }
-
     async GetThirdPartyProviderTokenAsync() {
         try {
             this.logger.time("GetThirdPartyProviderTokenAsync");
             const response = await this.axios({
                 url: '/authorize-decoupled',
                 method: 'POST',
-                data: { 
+                data: {
                     "response_type": "nordea_code",
                     "psu_id": "193805010844",
                     "scope": ["ACCOUNTS_BASIC","PAYMENTS_MULTIPLE","ACCOUNTS_TRANSACTIONS","ACCOUNTS_DETAILS","ACCOUNTS_BALANCES"],
@@ -41,14 +29,14 @@ export class AuthPSD2Resource {
             });
             this.logger.timeEnd("GetThirdPartyProviderTokenAsync");
             const {order_ref, tpp_token} = response.data.response;
-            return { 
+            return {
                 order_ref,
                 tpp_token
             };
         } catch (error) {
             this.logger.timeEnd("GetThirdPartyProviderTokenAsync");
-            this.logger.log('error',error);
-            return error;
+            this.logger.log('error', error);
+            throw error;
         }
     }
 
@@ -63,8 +51,8 @@ export class AuthPSD2Resource {
             return response.data.response.code;
         } catch (error) {
             this.logger.timeEnd("GetAuthorizationTokenAsync");
-            this.logger.log('error',error);
-            return error;
+            this.logger.log('error', error);
+            throw error;
         }
     }
 
@@ -84,8 +72,8 @@ export class AuthPSD2Resource {
             return response.data;
         } catch (error) {
             this.logger.timeEnd("GetAccessTokenAsync");
-            this.logger.log('error',error);
-            return error;
+            this.logger.log('error', error);
+            throw error;
         }
     }
 }

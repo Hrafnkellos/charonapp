@@ -76,7 +76,12 @@ app.get('/accounts/:id/transactions', async (req, res, next) => {
 // Payments
 
 app.get('/payments/domestic', async (req, res, next) => {
-  res.send(await PSD2.Payments.GetPaymentsAsync());
+  try {
+    res.send(await PSD2.Payments.GetPaymentsAsync());
+  } catch (ex) {
+    logger.log(ex);
+    res.status(ex.response.data.error.httpCode).send(ex.response.data.error.failures);
+  }
 });
 
 app.get('/payments/domestic/:payment_id', async (req, res, next) => {
@@ -96,7 +101,12 @@ app.post('/payments/domestic', async (req, res, next) => {
 
 app.put('/payments/domestic/:payment_id', async (req, res, next) => {
   const id = req.params.payment_id;
-  res.send(await PSD2.Payments.ConfirmPaymentAsync(id));
+  try {
+    res.send(await PSD2.Payments.ConfirmPaymentAsync(id));
+  } catch (ex) {
+    logger.log(ex);
+    res.status(ex.response.data.error.httpCode).send(ex.response.data.error.failures);
+  }
 });
 
 // catch errors

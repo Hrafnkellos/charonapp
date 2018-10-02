@@ -1,10 +1,10 @@
 import CssBaseline from '@material-ui/core/CssBaseline';
 import * as React from 'react';
 import { BrowserRouter as Router, Route } from "react-router-dom";
-import Accounts from './AccountsPage';
+import Accounts from './Accounts/AccountsPage';
 import './App.css';
 import MenuAppBar from './Menu';
-import Payments from './PaymentsPage';
+import Payments from './Payments/PaymentsPage';
 
 class App extends React.Component<any> {
 
