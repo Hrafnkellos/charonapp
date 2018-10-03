@@ -1,13 +1,13 @@
 import Grid from '@material-ui/core/Grid';
 import List from '@material-ui/core/List';
-import { withStyles } from '@material-ui/core/styles';
+import { Theme, withStyles } from '@material-ui/core/styles';
 import * as React from 'react';
 import { Component } from 'react';
 import { Account } from '../../functions/src/api/Interfaces/Account';
 import { AccountDetail } from './AccountDetail';
 import { AccountListItem } from './AccountListItem';
 
-const styles = (theme:any) => ({
+const styles = (theme:Theme) => ({
   root: {
     width: '100%',
   },

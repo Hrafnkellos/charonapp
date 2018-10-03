@@ -1,41 +1,57 @@
+import { Theme } from '@material-ui/core';
 import Grid from '@material-ui/core/Grid';
+import MenuItem from '@material-ui/core/MenuItem';
+import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
-import { Component } from 'react';
+import { Account } from '../../functions/src/api/Interfaces/Account';
 
-export class Payer extends Component<any,any> {
+const styles = (theme:Theme) => ({
+  menu: {
+    width: 200,
+  },
+  textField: {
+    // marginLeft: theme.spacing.unit,
+    // marginRight: theme.spacing.unit,
+    minWidth: 200,
+  },
+});
 
-  constructor(props:any) {
-    super(props);
-    this.state = {
-      accounts: []
-    }
-  }
+function Payer (props:IPPayer) {
+  const { handleChangeAccount, classes, Accounts, selectedAccount } = props;
 
-  public render() {
-    const { handleChangeAccount } = this.props;
-
-    return (
-      <Grid item={true} xs={12}>
+  return (
+    <Grid item={true} xs={12}>
       <TextField
-        id="PayerAccoutNumber"
-        label="PayerAccoutNumber"
-        value={this.state.payment.creditor.account.value}
-        onChange={handleChangeAccount("creditor")}
+        id="filled-select-currency"
+        select={true}
+        label="Withdrawal account"
+        className={classes.textField}
+        value={selectedAccount}
+        onChange={handleChangeAccount('creditor')}
+        SelectProps={{
+          MenuProps: {
+            className: classes.menu,
+          },
+        }}
         margin="normal"
-      />
-      </Grid>
-    )
-  }
+      >
+        {Accounts.map((account:Account) => (
+          <MenuItem key={account.accountNumber.value} value={account.accountNumber.value}>
+            {account.accountNumber.value}
+          </MenuItem>
+        ))}
+      </TextField>
+    </Grid>
+  )
 }
 
 
-// interface IMySnackbarContent {
-//   classes: any;
-//   className?: string,
-//   message?: any,
-//   onClose?: any,
-//   variant: 'success' |  'warning'| 'error'|  'info'
-// };
+interface IPPayer {
+  classes: any;
+  Accounts: Account[],
+  handleChangeAccount?: any,
+  selectedAccount: string,
+};
 
-// export const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
+export const PayerTemplate = withStyles(styles)(Payer);

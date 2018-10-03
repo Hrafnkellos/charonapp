@@ -7,12 +7,15 @@ import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 import * as React from 'react';
 import { Component } from 'react';
+import { Account } from '../../functions/src/api/Interfaces/Account';
 import { Payment } from '../../functions/src/api/Interfaces/Payment';
 import { PendingPayment } from '../../functions/src/api/Interfaces/PendingPayment';
 import { MySnackbarContentWrapper } from '../SnackBar';
+import { PayerTemplate } from './Payer';
 import { PendingPaymentsList } from './PendingPaymentsList';
 
 const initialState:ISPayment = {
+  Accounts: [],
   CurrencyCodes: ["SEK","ISK","EUR","USD"],
   PaymentBooked: false,
   PendingPayments: [],
@@ -42,20 +45,22 @@ const initialState:ISPayment = {
 
 class Payments extends Component<any,ISPayment> {
 
-  private host = 'https://us-central1-charon-lb.cloudfunctions.net/api/payments/domestic';
-  // private host = 'http://localhost:5000/payments/domestic';
+  // private host = 'https://us-central1-charon-lb.cloudfunctions.net/api/payments/domestic';
+  private host = 'http://localhost:5000';
 
   constructor(props:any) {
     super(props);
     this.state = initialState;
     this.FetchPendingPayments();
+    this.GetAccounts();
   }
 
   public FetchPendingPayments() {
-    fetch(this.host)
+    fetch(this.host+'/payments/domestic')
     .then(response => response.json())
     .then(jsonResponse => {
       this.setState({
+        ...this.state,
         PendingPayments: jsonResponse.payments ? jsonResponse.payments : []
       });
     });
@@ -70,7 +75,7 @@ class Payments extends Component<any,ISPayment> {
   }
 
   public PerformPayment = () => {
-    const myRequest = new Request(this.host,{
+    const myRequest = new Request(this.host+'/payments/domestic',{
       body: JSON.stringify(this.state.payment),
       cache: 'default',
       headers: new Headers({
@@ -106,7 +111,7 @@ class Payments extends Component<any,ISPayment> {
   };
 
   public ConfirmPayment = (id:string) => () => {
-    fetch(new Request(`${this.host}/${id}`, {
+    fetch(new Request(`${this.host}/payments/domestic/${id}`, {
       cache: 'default',
       headers: new Headers({
         "Content-Type": "application/json",
@@ -119,6 +124,24 @@ class Payments extends Component<any,ISPayment> {
       setTimeout( this.FetchPendingPayments, 1000);
     });
   };
+
+  public GetAccounts() {
+    fetch(this.host+'/accounts')
+    .then(response => response.json())
+    .then(jsonResponse => {
+      this.setState({
+        ...this.state,
+        Accounts: jsonResponse.accounts,
+        payment: {
+          ...this.state.payment,
+          creditor: {
+            ...this.state.payment.creditor,
+            account: jsonResponse.accounts[0].accountNumber
+          }
+        }
+      });
+    });
+  }
 
   public handleChangeAccount = (type:string) => (event:any) => {
     this.setState({
@@ -168,7 +191,8 @@ class Payments extends Component<any,ISPayment> {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item={true} xs={12}>
+                <PayerTemplate handleChangeAccount={this.handleChangeAccount} Accounts={this.state.Accounts} selectedAccount={this.state.payment.creditor.account.value}/>
+                {/* <Grid item={true} xs={12}>
                   <TextField
                     id="PayerAccoutNumber"
                     label="PayerAccoutNumber"
@@ -176,7 +200,7 @@ class Payments extends Component<any,ISPayment> {
                     onChange={this.handleChangeAccount("creditor")}
                     margin="normal"
                   />
-                </Grid>
+                </Grid> */}
                 <Grid item={true} xs={12}>
                   <TextField
                     id="ReceiverAccoutNumber"
@@ -264,7 +288,8 @@ interface ISPayment {
   CurrencyCodes : string[];
   PaymentBooked: boolean;
   SnackbarOpen: boolean;
-  PendingPayments: PendingPayment[]
+  PendingPayments: PendingPayment[],
+  Accounts: Account[],
 }
 
 export default Payments;

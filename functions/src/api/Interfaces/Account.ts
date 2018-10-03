@@ -1,6 +1,6 @@
 export interface Account  {
   _id:string;
-  _links:Array<Link>;
+  _links?:Array<Link>;
   accountName:string;
   accountNumber:AccountNumber;
   accountNumbers:Array<AccountNumber>;
@@ -8,14 +8,14 @@ export interface Account  {
   availableBalance:string;
   bank:Bank;
   bookedBalance:string;
-  country:string;
-  creditLimit:string;
+  country?:string;
+  creditLimit?:string;
   currency:string;
-  latestTransactionBookingDate:string;
-  ownerName:string;
+  latestTransactionBookingDate?:string;
+  ownerName?:string;
   product:string;
   status:string;
-  valueDatedBalance:string;
+  valueDatedBalance?:string;
 
 }
 
@@ -26,7 +26,7 @@ interface Link {
 
 interface AccountNumber {
   _type:string;
-  value:string;
+  value?:string;
 }
 
 interface Bank {

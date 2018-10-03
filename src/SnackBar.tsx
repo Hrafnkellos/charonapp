@@ -18,7 +18,7 @@ const variantIcon = {
   warning: WarningIcon,
 };
 
-const styles1 = (theme:Theme) => ({
+const styles = (theme:Theme) => ({
   error: {
     backgroundColor: theme.palette.error.dark,
   },
@@ -82,4 +82,4 @@ interface IMySnackbarContent {
   variant: 'success' |  'warning'| 'error'|  'info'
 };
 
-export const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
+export const MySnackbarContentWrapper = withStyles(styles)(MySnackbarContent);
