@@ -21,6 +21,10 @@ class Accounts extends Component<IAccounts,ISAccounts> {
   constructor(props:any) {
     super(props);
     this.state = { accounts: [], selectedAccount: 0, transactions: []};
+    this.GetAccounts();
+  };
+
+  public GetAccounts() {
     fetch(this.host)
     .then(response => response.json())
     .then(jsonResponse => {
@@ -28,7 +32,7 @@ class Accounts extends Component<IAccounts,ISAccounts> {
         accounts: jsonResponse.accounts
       });
     });
-  };
+  }
 
   public SelectAccount = (selectedAccount:number)  => {
     this.setState({

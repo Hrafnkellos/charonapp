@@ -82,11 +82,4 @@ interface IMySnackbarContent {
   variant: 'success' |  'warning'| 'error'|  'info'
 };
 
-// enum snackbarType {
-//   'success',
-//   'warning',
-//   'error',
-//   'info'
-// }
-
 export const MySnackbarContentWrapper = withStyles(styles1)(MySnackbarContent);
