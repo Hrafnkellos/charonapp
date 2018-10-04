@@ -45,8 +45,8 @@ const initialState:ISPayment = {
 
 class Payments extends Component<any,ISPayment> {
 
-  // private host = 'https://us-central1-charon-lb.cloudfunctions.net/api/payments/domestic';
-  private host = 'http://localhost:5000';
+  private host = 'https://us-central1-charon-lb.cloudfunctions.net/api/payments/domestic';
+  // private host = 'http://localhost:5000';
 
   constructor(props:any) {
     super(props);
