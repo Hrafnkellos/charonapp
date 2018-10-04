@@ -2,6 +2,7 @@ import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
 import * as cors from 'cors';
+import * as functions from 'firebase-functions';
 import axios from 'axios';
 import { morganOption } from '../api/config/winston.config';
 import { morganJsonFormat, setTokens } from '../api/config/morgan.config';
@@ -14,8 +15,8 @@ import BaseController from './Controllers/BaseController';
 Sentry.init({ dsn: 'https://edd622d651324f54baa8c13f6809a5e5@sentry.io/1286393' });
 const logger = console;
 const axiosInstance = axios.create();
-const X_IBM_Client_ID:string = functions.config().n.client_id;
-const X_IBM_Client_Secret:string = functions.config().n.client_seacret;
+const X_IBM_Client_ID:string = process.env.N_CLIENT_ID || functions.config().n.client_id;
+const X_IBM_Client_Secret:string = process.env.N_CLIENT_SEACRET || functions.config().n.client_seacret;
 
 const PSD2 = new PSD2Resource(axiosInstance, logger, X_IBM_Client_ID, X_IBM_Client_Secret);
 const app = express();
