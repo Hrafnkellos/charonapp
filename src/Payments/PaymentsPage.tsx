@@ -1,6 +1,5 @@
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
-// import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
 import Snackbar from '@material-ui/core/Snackbar';
 import TextField from '@material-ui/core/TextField';
@@ -13,6 +12,7 @@ import { PendingPayment } from '../../functions/src/api/Interfaces/PendingPaymen
 import { MySnackbarContentWrapper } from '../SnackBar';
 import { PayerTemplate } from './Payer';
 import { PendingPaymentsList } from './PendingPaymentsList';
+import { ReceiverTemplate } from './Receiver';
 
 const initialState:ISPayment = {
   Accounts: [],
@@ -121,7 +121,7 @@ class Payments extends Component<any,ISPayment> {
     } as RequestInit))
     .then(response => response.json())
     .then(jsonResponse => {
-      setTimeout( this.FetchPendingPayments, 1000);
+      setTimeout(() => {this.FetchPendingPayments()} , 3000);
     });
   };
 
@@ -191,26 +191,22 @@ class Payments extends Component<any,ISPayment> {
                     margin="normal"
                   />
                 </Grid>
-                <PayerTemplate handleChangeAccount={this.handleChangeAccount} Accounts={this.state.Accounts} selectedAccount={this.state.payment.creditor.account.value}/>
-                {/* <Grid item={true} xs={12}>
-                  <TextField
-                    id="PayerAccoutNumber"
-                    label="PayerAccoutNumber"
-                    value={this.state.payment.creditor.account.value}
-                    onChange={this.handleChangeAccount("creditor")}
-                    margin="normal"
-                  />
-                </Grid> */}
+                <PayerTemplate
+                  handleChangeAccount={this.handleChangeAccount}
+                  Accounts={this.state.Accounts}
+                  selectedAccount={this.state.payment.creditor.account.value}
+                  payment={this.state.payment}
+                  handleChangeParticipant={this.handleChangeParticipant}
+                />
+                <ReceiverTemplate
+                  payment={this.state.payment}
+                  handleChangeAccount={this.handleChangeAccount}
+                />
                 <Grid item={true} xs={12}>
-                  <TextField
-                    id="ReceiverAccoutNumber"
-                    label="ReceiverAccoutNumber"
-                    value={this.state.payment.debtor.account.value}
-                    onChange={this.handleChangeAccount("debtor")}
-                    margin="normal"
-                  />
+                  <Typography variant="headline" component="h5" style={{marginTop:15}}>
+                    Details
+                  </Typography>
                 </Grid>
-
                 <Grid item={true} xs={12}>
                   <TextField
                     id="ExternalId"
@@ -220,24 +216,7 @@ class Payments extends Component<any,ISPayment> {
                     margin="normal"
                   />
                 </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    id="Message"
-                    label="Receivers Message"
-                    value={this.state.payment.creditor.message}
-                    onChange={this.handleChangeParticipant("creditor", "message")}
-                    margin="normal"
-                  />
-                </Grid>
-                <Grid item={true} xs={12}>
-                  <TextField
-                    id="ReceiversName"
-                    label="Receivers Name"
-                    value={this.state.payment.creditor.name}
-                    onChange={this.handleChangeParticipant("creditor", "name")}
-                    margin="normal"
-                  />
-                </Grid>
+
                 <Grid item={true} xs={12} style={{marginTop:15}}>
                   {
                     !this.state.PaymentBooked &&
